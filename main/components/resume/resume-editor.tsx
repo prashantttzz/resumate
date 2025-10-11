@@ -66,23 +66,23 @@ export function ResumeEditor({
         slug: data.slug,
         personalInfo: {
           fullName:
-            data.personalInfo?.fullName || githubProfile.personalInfo.fullName,
+            data.personalInfo?.fullName,
           email:
             data.personalInfo?.email ||
-            githubProfile.personalInfo.email ||
+            githubProfile?.personalInfo.email ||
             "youremail@gmail.com",
           jobTitle: data.personalInfo?.jobTitle || "software engineer",
           phone: data.personalInfo?.phone || "8989898989",
           linkedin: data.personalInfo?.linkedin || "https://linkedin.in",
           github:
-            data.personalInfo?.github || githubProfile.personalInfo.github,
+            data.personalInfo?.github,
           website:
             data.personalInfo?.website ||
-            githubProfile.personalInfo.website ||
-            "",
+            githubProfile?.personalInfo?.website ||
+            "hello",
           address:
             data.personalInfo?.address ||
-            githubProfile.personalInfo.address ||
+            githubProfile?.personalInfo?.address ||
             "",
           summary:
             data.personalInfo?.summary || "your proffesional summary here.  ",
