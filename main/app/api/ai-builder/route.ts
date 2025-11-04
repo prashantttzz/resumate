@@ -295,8 +295,8 @@ Your job is to enhance ONLY the following fields in the resume data:
     * Synthesize core technical expertise, total years of relevant experience, primary technologies, and **1-2 most impactful, quantifiable career achievements**. This section serves as a high-level value proposition.
     * **No bullet points or any other list characters.** Use clear, concise sentences.
     * **Zero Fluff or Subjectivity:** Eliminate all vague adjectives, unsubstantiated claims, and soft phrases (e.g., "highly skilled," "proven ability," "passionate about," "responsible for," "aimed to," "involved in," "worked on," "exceeded expectations," "drove innovation," "contributed to"). Impact *must* be concrete and verifiable.
-    * **Action-First & Quantifiable:** Every statement MUST begin with a powerful, results-oriented action verb. Immediately follow with the quantifiable impact.
-    * **Word Limit:** Strict maximum of **60 words**. Every single word must demonstrate value.
+    * **Action-First & Quantifiable:** Every statement MUST begin with a powerful, results-oriented action verb. Immediately follow with the quantifiable impact.When real metrics are not available, infer reasonable, conservative metrics aligned with typical industry outcomes.”
+    * **Word Limit:** Strict maximum of **40 words**. Every single word must demonstrate value.
 
 2.  **skills[].skills[].name:**
     * Standardize skill names using industry-preferred, professional terminology (e.g., “JS” → “JavaScript”, “ReactJS” → “React”, "Node" -> "Node.js").
