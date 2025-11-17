@@ -14,11 +14,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {  WandSparkles } from "lucide-react";
+import { WandSparkles } from "lucide-react";
 import { callResumeAI } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import Loader from "@/components/Loader";
 
 const formSchema = z.object({
@@ -34,9 +38,7 @@ const formSchema = z.object({
   phone: z.string().min(5, {
     message: "Phone number must be at least 5 characters.",
   }),
-  address: z
-    .string()
-    .optional(),
+  address: z.string().optional(),
   website: z
     .string()
     .url({
@@ -84,7 +86,7 @@ export function PersonalInfoForm({
       address: "San Francisco, CA",
       website: "https://johndoe.com",
       linkedin: "https://linkedin.com/in/johndoe",
-      github:"https://github/johndoe",
+      github: "https://github/johndoe",
       summary:
         "Experienced software engineer with a passion for building scalable web applications and solving complex problems.",
     },
@@ -92,7 +94,7 @@ export function PersonalInfoForm({
 
   const [loading, setLoading] = useState(false);
 
-  const handlesummary = async (aiPrompt:string) => {
+  const handlesummary = async (aiPrompt: string) => {
     try {
       setLoading(true);
       const aisummary = await callResumeAI(aiPrompt, "summary");
@@ -101,38 +103,40 @@ export function PersonalInfoForm({
       toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
-      toast.success('generated successfully')
+      toast.success("generated successfully");
     }
   };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="John Doe" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="jobTitle"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Job Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Software Engineer" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="jobTitle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Job Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Software Engineer" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
@@ -161,47 +165,16 @@ export function PersonalInfoForm({
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="San Francisco, CA" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
-            name="website"
+            name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website</FormLabel>
+                <FormLabel>Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://johndoe.com" {...field} />
+                  <Input placeholder="San Francisco, CA" {...field} />
                 </FormControl>
-                <FormDescription>Optional</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="linkedin"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>LinkedIn</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="https://linkedin.com/in/johndoe"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>Optional</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -211,14 +184,45 @@ export function PersonalInfoForm({
             name="github"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Github</FormLabel>
+                <FormLabel>Github  <span className="text-white/60">(optional)</span></FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://github.com/in/johndoe"
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>Optional</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website  <span className="text-white/60">(optional)</span></FormLabel>
+                <FormControl>
+                  <Input placeholder="https://johndoe.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="linkedin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>LinkedIn  <span className="text-white/60">(optional)</span></FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://linkedin.com/in/johndoe"
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -233,45 +237,46 @@ export function PersonalInfoForm({
                 Professional Summary
               </FormLabel>
               <FormControl>
-              <div className="relative ">
-                    <div className="bg-background rounded-2xl border p-2 pb-10 ">
-                      <textarea
-                        placeholder="Describe your responsibilities and achievements..."
-                        className="bg-transparent border-none outline-none ring-0 resize-none focus:outline-none focus:ring-0 focus:border-none focus:bg-transparent focus:shadow-none hover:outline-none hover:ring-0 hover:border-none hover:shadow-none hover:bg-transparent scrollbar-custom min-h-[200px] w-full text-sm p-2"
-                        {...field}
-                      />
-                    </div>
-                    <Tooltip>
-                      <TooltipTrigger type="button"
-                        disabled={!field.value || field.value.trim() === ""}
-                        className="absolute bottom-3 right-3 disabled:cursor-not-allowed"
-                        onClick={() => handlesummary(field.value ?? "")}
-                      >
-                        {loading ? (
-                          <Loader />
-                        ) : !field.value || field.value.trim() === "" ? (
-                          <WandSparkles className="h-5 w-5 text-gray-400" />
-                        ) : (
-                          <WandSparkles className="h-5 w-5 " />
-                        )}
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        {!field.value || field.value.trim() === ""
-                          ? "prompt is too short"
-                          : "enhance with ai"}
-                      </TooltipContent>
-                    </Tooltip>
+                <div className="relative ">
+                  <div className="bg-background rounded-2xl border p-2 pb-10 ">
+                    <textarea
+                      placeholder="Describe your responsibilities and achievements..."
+                      className="bg-transparent border-none outline-none ring-0 resize-none focus:outline-none focus:ring-0 focus:border-none focus:bg-transparent focus:shadow-none hover:outline-none hover:ring-0 hover:border-none hover:shadow-none hover:bg-transparent scrollbar-custom min-h-[200px] w-full text-sm p-2"
+                      {...field}
+                    />
                   </div>
+                  <Tooltip>
+                    <TooltipTrigger
+                      type="button"
+                      disabled={!field.value || field.value.trim() === ""}
+                      className="absolute bottom-3 right-3 disabled:cursor-not-allowed"
+                      onClick={() => handlesummary(field.value ?? "")}
+                    >
+                      {loading ? (
+                        <Loader />
+                      ) : !field.value || field.value.trim() === "" ? (
+                        <WandSparkles className="h-5 w-5 text-gray-400" />
+                      ) : (
+                        <WandSparkles className="h-5 w-5 " />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {!field.value || field.value.trim() === ""
+                        ? "prompt is too short"
+                        : "enhance with ai"}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-     <div className="flex  justify-end">
-         <Button type="submit" className="hover-lift ">
-          Save & Continue
-        </Button>
-     </div>
+        <div className="flex  justify-end">
+          <Button type="submit" className="hover-lift ">
+            Save & Continue
+          </Button>
+        </div>
       </form>
     </Form>
   );

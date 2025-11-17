@@ -66,13 +66,13 @@ export function ResumeList({ resumes }: resumeProps) {
           loading={isDownloading}
         />
       )}
-      <Card className="border-0 shadow-sm flex-1">
+      <Card className=" drop-shadow-lg glass shadow-sm flex-1">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-2xl font-semibold mb-3">
             Your Resumes
           </CardTitle>
           <div className="flex items-center gap-2">
-            <NewResume type="resume" />
+            <NewResume text={false} type="resume" />
             <div className="flex border rounded-md overflow-hidden">
               <Button
                 variant="ghost"
@@ -147,11 +147,11 @@ export function ResumeList({ resumes }: resumeProps) {
                   key={resume.id}
                   className="block group"
                 >
-                  <div className="bg-secondary border-1 rounded-lg p-4 hover:bg-secondary/50 transition-all h-full">
+                  <div className="!bg-secondary/30 glass--inner  border-1 border-black rounded-lg p-4 hover:bg-secondary/50 transition-all h-full">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-start gap-2">
                         <div className="w-10 h-10 rounded-md bg-background flex items-center justify-center">
-                          <FileText className="h-5 w-5 text-white" />
+                          <FileText className="h-5 w-5 " />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
@@ -239,7 +239,7 @@ export function ResumeList({ resumes }: resumeProps) {
                   <div className="flex items-center justify-between p-3 rounded-md bg-secondary/30 hover:bg-secondary/50 transition-all">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center">
-                        <FileText className="h-4 w-4 text-white" />
+                        <FileText className="h-4 w-4 " />
                       </div>
                       <div>
                         <div className="flex items-center gap-2">

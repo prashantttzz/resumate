@@ -55,7 +55,7 @@ export default function ProStatusButton({
       )}
 
       {/* Label */}
-      <span className="font-medium text-white">{label}</span>
+      <span className="font-medium ">{label}</span>
 
       {/* Pro badge/right adornment */}
       {isPro && !loading && (

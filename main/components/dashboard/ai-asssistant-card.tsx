@@ -8,9 +8,7 @@ export function AiAssistantCard({isPremium}:{isPremium:boolean}) {
   return (
     <Card
       className="
-        relative overflow-hidden border border-border/60 bg-card
-        transition-shadow duration-300 ease-out hover:shadow-lg
-        focus-within:ring-1 focus-within:ring-main flex flex-col justify-center"
+        relative overflow-hidden glass flex flex-col justify-center"
     >
       <CardContent className="p-5">
         <div className="flex items-center gap-4">
@@ -41,7 +39,7 @@ export function AiAssistantCard({isPremium}:{isPremium:boolean}) {
 
           {/* Text */}
           <div className="flex min-w-0 flex-col gap-1">
-            <h3 className="text-pretty text-lg font-semibold leading-6 text-white">
+            <h3 className="text-pretty text-lg font-semibold leading-6">
               Coco is ready to help!
             </h3>
             <p className="text-pretty text-sm leading-6 text-muted-foreground">

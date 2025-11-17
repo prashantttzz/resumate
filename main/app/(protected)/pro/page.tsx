@@ -191,13 +191,13 @@ export default function PlanOverview() {
     return <Loader />;
   }
   return (
-    <div className="min-h-screen  text-white p-6">
+    <div className="min-h-screen  n p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-main">Your Plan</h1>
-            <p className="text-white mt-1">
+            <p className="n mt-1">
               Manage your subscription and billing
             </p>
           </div>
@@ -226,7 +226,7 @@ export default function PlanOverview() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Current Plan Details */}
           <div className="lg:col-span-2">
-            <Card className="">
+            <Card className="glass">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default function PlanOverview() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm text-white ">
+                      <span className="text-sm n ">
                         Next billing date
                       </span>
                     </div>
@@ -289,7 +289,7 @@ export default function PlanOverview() {
                   </div>
                 )}
                 {currentSubscription?.status === "cancelled" && (
-                  <div className="flex items-center w-fit justify-between bg-white rounded-2xl">
+                  <div className="flex items-center w-fit justify-between rounded-2xl">
                     <PremiumButton />
                   </div>
                 )}
@@ -302,7 +302,7 @@ export default function PlanOverview() {
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
-                          className="border-gray-600 hover:border-red-500 hover:text-red-400"
+                          className="glass !bg-red-500 hover:border-red-500 hover:text-red-400"
                         >
                           Cancel Subscription
                         </Button>
@@ -353,7 +353,7 @@ export default function PlanOverview() {
 
           {/* Billing Information */}
           <div className="space-y-6">
-            <Card className="">
+            <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Headphones className="h-5 w-5 text-main" />
@@ -365,7 +365,7 @@ export default function PlanOverview() {
                   Have questions about your subscription? Our support team is
                   here to help.
                 </p>
-                <Button variant="outline" className="w-full border-gray-600">
+                <Button variant="outline" className="w-full glass !bg-white/10">
                   Contact Support
                 </Button>
               </CardContent>

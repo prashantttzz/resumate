@@ -97,6 +97,7 @@ export function ResumePreview({
     },
   ];
   const customSections = resumeData?.customSections || [];
+
   useEffect(() => {
     function handleResize() {
       const container = containerRef.current;
@@ -104,8 +105,6 @@ export function ResumePreview({
 
       const parentWidth = window.innerWidth;
       const contentWidth = container.scrollWidth;
-
-      // Only scale down, never scale up
       const newScale = Math.min(1, parentWidth / contentWidth);
       setScale(newScale);
     }
@@ -126,13 +125,15 @@ export function ResumePreview({
   if (!TemplateComponent) {
     return <div className="text-red-500">Unknown template selected.</div>;
   }
- return (
-    <div className="overflow-hidden w-full h-full">
-      <div
-        ref={containerRef}
-        style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
-      >
-        <div className="min-w-[800px] max-w-[800px] min-h-[1200px] bg-white  mx-auto">
+
+  return (
+  <div className="overflow-auto w-full h-full bg-neutral-100 p-4">
+    <div
+      style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+      ref={containerRef}
+    >
+      <div className="resume-preview">
+        <div className="page">
           <TemplateComponent
             personal={personal}
             experiences={experiences}
@@ -145,5 +146,7 @@ export function ResumePreview({
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 }

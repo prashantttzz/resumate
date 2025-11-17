@@ -96,7 +96,7 @@ export default function Component() {
         {/* Title Section */}
         <div className="mb-8">
           <h1 className="text-3xl text-main font-bold mb-2">Resume Templates</h1>
-          <p className="text-white-400">
+          <p className="text--400">
             Browse and select from our collection of professional resume
             templates
           </p>
@@ -109,10 +109,10 @@ export default function Component() {
               key={category}
               variant={selectedCategory === category ? "default" : "ghost"}
               onClick={() => setSelectedCategory(category)}
-              className={`whitespace-nowrap ${
+              className={` space-nowrap ${
                 selectedCategory === category
-                  ? "bg-white text-black hover:bg-gray-200"
-                  : "text-gray-400 hover:text-white hover:bg-gray-800"
+                  ? ""
+                  : "text-gray-400 hover:text-white  hover:bg-gray-800"
               }`}
             >
               {category}
@@ -125,7 +125,7 @@ export default function Component() {
           {filteredTemplates.map((template) => (
             <Card
               key={template.id}
-              className={`cursor-pointer transition-all duration-300  hover:shadow-lg hover:transform hover:scale-[1.02] ${
+              className={`cursor-pointer glass transition-all duration-300  hover:shadow-lg hover:transform hover:scale-[1.02] ${
                 selectedTemplate === template.id
                   ? "ring-2 ring-main border-main shadow-blue-500/20 shadow-lg"
                   : ""
@@ -134,7 +134,7 @@ export default function Component() {
             >
               <CardContent className="p-0 relative">
                 {/* Template Preview */}
-                <div className="aspect-[3/4] bg-white rounded-t-lg overflow-hidden">
+                <div className="aspect-[3/4] bg-  rounded-t-lg overflow-hidden">
                   <img
                     src={template.preview || "/placeholder.svg"}
                     alt={template.name}
@@ -146,7 +146,7 @@ export default function Component() {
                 {selectedTemplate === template.id && (
                   <div className="absolute top-3 right-3 w-6 h-6 bg-main rounded-full flex items-center justify-center animate-in zoom-in-50 duration-200">
                     <svg
-                      className="w-4 h-4 text-white"
+                      className="w-4 h-4 text- "
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -177,7 +177,7 @@ export default function Component() {
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="bg-gray-800 text-main text-xs"
+                          className=" text-main text-xs"
                         >
                           {tag}
                         </Badge>
@@ -196,7 +196,7 @@ export default function Component() {
             <div className="bg-background rounded-full px-6 py-3 shadow-2xl backdrop-blur-sm">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-10 h-10 bg- rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={
                         templates.find((t) => t.id === selectedTemplate)
@@ -207,7 +207,7 @@ export default function Component() {
                     />
                   </div>
                   <div className="text-left">
-                    <p className="text-white font-medium text-sm">
+                    <p className="text- font-medium text-sm">
                       {templates.find((t) => t.id === selectedTemplate)?.name}
                     </p>
                     <p className="text-gray-400 text-xs">Template selected</p>
@@ -215,7 +215,7 @@ export default function Component() {
                 </div>
                 <Button
                   onClick={handleUseTemplate}
-                  className="bg-gradient-to-r from-main to-main hover:from-main hover:to-main text-white font-medium px-6 py-2 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg"
+                  className="bg-gradient-to-r from-main to-main hover:from-main hover:to-main text- font-medium px-6 py-2 rounded-full transition-all duration-200 transform hover:scale-105 shadow-lg"
                 >
                   Use This Template
                 </Button>
@@ -231,14 +231,14 @@ export default function Component() {
         >
           <DialogContent className="">
             <DialogHeader>
-              <DialogTitle className="text-white">
+              <DialogTitle className="text-">
                 Choose Resume Option
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               {existingResumes.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3 text-white">
+                  <h3 className="text-lg font-semibold mb-3 text-">
                     Apply to Existing Resume
                   </h3>
                   <div className="space-y-2">
@@ -252,7 +252,7 @@ export default function Component() {
                           onClick={() => handleApplyToExisting(resume.id)}
                         >
                           <div>
-                            <p className="font-medium text-white">
+                            <p className="font-medium text-">
                               {resume.title}
                             </p>
                             <p className="text-sm text-gray-400">
@@ -270,7 +270,7 @@ export default function Component() {
               <div className="border-t border-gray-700 pt-4">
                 <Button
                   onClick={handleCreateNew}
-                  className="w-full bg-white text-black hover:bg-gray-200"
+                  className="w-full bg- text-black hover:bg-gray-200"
                 >
                   Create New Resume with This Template
                 </Button>
@@ -283,7 +283,7 @@ export default function Component() {
         <Dialog open={showNameDialog} onOpenChange={setShowNameDialog}>
           <DialogContent className=" max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-white text-xl font-semibold">
+              <DialogTitle className="text- text-xl font-semibold">
                 Create New Resume
               </DialogTitle>
             </DialogHeader>
@@ -291,7 +291,7 @@ export default function Component() {
               <div className="text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-main to-main rounded-full mx-auto mb-4 flex items-center justify-center">
                   <svg
-                    className="w-8 h-8 text-white"
+                    className="w-8 h-8 text- "
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -306,7 +306,7 @@ export default function Component() {
                 </div>
                 <p className="text-gray-300 text-sm">
                   You're about to create a new resume using the{" "}
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text- ">
                     {templates.find((t) => t.id === selectedTemplate)?.name}
                   </span>{" "}
                   template
@@ -314,7 +314,7 @@ export default function Component() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="resume-name" className="text-white font-medium">
+                <Label htmlFor="resume-name" className="text- font-medium">
                   Resume Name
                 </Label>
                 <Input
@@ -323,7 +323,7 @@ export default function Component() {
                   placeholder="e.g., Software Engineer Resume"
                   value={resumeName}
                   onChange={(e) => setResumeName(e.target.value)}
-                  className=" border-gray-600 text-white placeholder-gray-400  transition-all duration-200"
+                  className=" border-gray-600 text- placeholder-gray-400  transition-all duration-200"
                 />
               </div>
 
@@ -331,7 +331,7 @@ export default function Component() {
                 <Button
                   variant="outline"
                   onClick={() => setShowNameDialog(false)}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200"
+                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800 hover:text- transition-all duration-200"
                   disabled={resumePending}
                 >
                   Cancel
@@ -339,7 +339,7 @@ export default function Component() {
                 <Button
                   onClick={handleCreateWithName}
                   disabled={!resumeName.trim() || resumePending}
-                  className="flex-1 bg-gradient-to-r from-main to-main hover:from-main hover:to-main text-white font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="flex-1 bg-gradient-to-r from-main to-main hover:from-main hover:to-main text-  font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {resumePending ? (
                     <div className="flex items-center gap-2">

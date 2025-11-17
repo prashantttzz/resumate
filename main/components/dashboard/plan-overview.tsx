@@ -34,7 +34,7 @@ export function   PlanOverview({
   }, [premium]);
 
   return (
-    <Card className="border-0 shadow-sm overflow-hidde flex-1">
+    <Card className="drop-shadow-md glass shadow-sm overflow-hidde flex-1">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-semibold text-main">Your Plan</CardTitle>

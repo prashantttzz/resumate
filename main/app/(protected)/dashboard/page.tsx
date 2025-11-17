@@ -1,7 +1,7 @@
 "use client";
 import { ResumeList } from "@/components/dashboard/resume-list";
 import { useGetAllCoverLetter, useGetAllResumes } from "@/query/resume/query";
-import { Bot, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { ResumeNotFound } from "@/components/error";
@@ -10,9 +10,9 @@ import { DashboardStats } from "@/components/dashboard/dashboard-cards";
 import { UpcomingFeatures } from "@/components/dashboard/upcoming-features";
 import { useSession } from "next-auth/react";
 import { isPremium } from "@/query/user/query";
-import { CoverLetterList } from "@/components/dashboard/coverletter-list";
 import { CoverLetterNotFound } from "@/components/coverletter-error";
 import NewResume from "@/components/NewResume";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
   const { data: resumes, isError, error, isPending } = useGetAllResumes();
@@ -28,12 +28,11 @@ export default function DashboardPage() {
     error: premiumerror,
     isPending: premiumloading,
   } = isPremium();
-
   const session = useSession();
   const user = session.data?.user;
   const premium = data?.isPremium;
   useEffect(() => {
-    if (isError || isPremiumError ) {
+    if (isError || isPremiumError) {
       toast.error(error?.message || premiumerror?.message);
     }
   }, [
@@ -50,38 +49,58 @@ export default function DashboardPage() {
 
   if (isPending || premiumloading || clPending) {
     return (
-      <div className="flex h-full w-full items-center justify-center">
-        <LoaderCircle className="animate-spin" />
+      <div className="flex flex-col gap-8 animate-in">
+        <div>
+          <div className="flex justify-between w-full items-center">
+            <Skeleton className="h-6 w-[300px]" />
+            <Skeleton className="h-10 w-[120px]" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-6">
+          <Skeleton className="h-[120px] w-full" />
+          <Skeleton className="h-[120px] w-full" />
+          <Skeleton className="h-[120px] w-full" />
+        </div>
+
+        <Skeleton className="h-[300px] w-full" />
+
+        <div className="flex gap-8">
+          <Skeleton className="h-[300px] flex-1" />
+          <Skeleton className="h-[300px] flex-1" />
+        </div>
       </div>
     );
   }
   if (!resumes) {
     return <ResumeNotFound variant="empty" />;
   }
-  if (!coverLetters ) {
+  if (!coverLetters) {
     return <CoverLetterNotFound variant="empty" />;
   }
 
   return (
     <div className="flex flex-col gap-8 animate-in">
       <div>
-        <h1 className="text-2xl font-medium">Dashboard</h1>
-   <div className="flex justify-between w-full items-center mt-10">
-        <div>
-         <p className="text-muted-white ">
-          Welcome{" "}
-          <span className="text-main  font-semibold text-2xl">
-            {user?.name}
-          </span>{" "}
-          to your workspace.
-        </p>
-       </div>
-<div className="flex items-center  justify-center gap-2 bg-white text-black rounded-md px-2 py-1 font-semibold">
-  Create     <NewResume type="resume"/>
-  </div>   </div>
+        <div className="flex justify-between w-full items-center">
+          <div>
+            <p className="text-muted-white ">
+              Welcome
+              <span className="text-main px-4 font-semibold text-2xl">
+                {user?.name}
+              </span>
+              to your workspace.
+            </p>
+          </div>        
+             <NewResume text={true} type="resume" />
+        </div>
       </div>
 
-      <DashboardStats resume={resumes} premium={premium || false} cv={coverLetters}/>
+      <DashboardStats
+        resume={resumes}
+        premium={premium || false}
+        cv={coverLetters}
+      />
       <div className=" flex flex-col md:flex-row w-full  md:items-center justify-between gap-10 ">
         <ResumeList resumes={resumes} />
       </div>

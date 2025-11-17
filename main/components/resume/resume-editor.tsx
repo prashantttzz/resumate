@@ -152,10 +152,7 @@ export function ResumeEditor({
 
   const handleSectionComplete = (section: SectionType, data: any) => {
     setResumeData((prev) => {
-      // Start with the previous state
       const updated = { ...prev };
-
-      // Update the correct section based on the 'section' type
       if (section === "personal") {
         updated.personalInfo = data;
       } else if (section === "experience") {
@@ -271,7 +268,7 @@ export function ResumeEditor({
           loading={isDownloading}
         />
       )}
-      <div className="flex flex-col relative">
+      <div className="flex flex-col  relative">
         <div className="flex md:hidden  justify-end mb-5">
           {isPreviewOpen ? (
             <Button onClick={() => setIsPreviewOpen(false)}>
@@ -314,7 +311,7 @@ export function ResumeEditor({
           )}
         </div>
         {!isPreviewOpen && (
-          <Card className="border-0 shadow-sm px-2 w-full">
+          <Card className="glass shadow-sm px-2 w-full">
             <div className="">
               <div className="lg:col-span-3">
                 <div className="sticky top-20  p-2">
@@ -533,7 +530,7 @@ export function ResumeEditor({
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-base font-medium">Preview</h3>
               </div>
-              <Card className="border-0 w-full overflow-auto shadow-sm ">
+              <Card className="border-0 w-full  overflow-auto shadow-sm ">
                 <ResumePreview
                   template={selectedTemplate}
                   resumeData={resumeData}

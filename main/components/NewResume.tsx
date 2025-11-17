@@ -25,8 +25,9 @@ import PremiumButton from "./SubscriptionButton";
 
 type Props = {
   type: "resume" | "cover letter";
+  text:boolean;
 };
-const NewResume = ({ type }: Props) => {
+const NewResume = ({ type ,text}: Props) => {
   const { mutate: resumeMutate, isPending: resumePending } =
     useCreateNewResume();
   const { mutate: clMutate, isPending: clpending } = useCreateNewCoverLetter();
@@ -92,8 +93,8 @@ const NewResume = ({ type }: Props) => {
     <>
       {type === "resume" && (
         <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger className="flex p-2 h-8 w-8 bg-white items-center justify-center rounded-sm">
-                            <Plus className="text-black" />
+          <AlertDialogTrigger className="flex p-1 bg-black text-sm dark:bg-white text-white dark:text-black items-center justify-center rounded-sm">
+            {text && "Create"} <Plus className="text-white dark:text-black" />
           </AlertDialogTrigger>
 
           <AlertDialogContent>
@@ -156,7 +157,7 @@ const NewResume = ({ type }: Props) => {
       {type == "cover letter" && (
         <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger className="flex p-2 h-8 w-8 bg-white items-center justify-center rounded-sm">
-                            <Plus className="text-black" />
+            <Plus className="text-black" />
           </AlertDialogTrigger>
 
           <AlertDialogContent>

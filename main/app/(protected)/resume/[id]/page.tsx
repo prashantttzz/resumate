@@ -26,8 +26,6 @@ export default function ResumePage() {
       </div>
     );
   }
-console.log("resume",resumeData)
-  // Safe merge logic
   const mergedData = resumeData
     ? {
         ...resumeData,

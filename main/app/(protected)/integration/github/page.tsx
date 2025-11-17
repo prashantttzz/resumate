@@ -78,8 +78,8 @@ export default function GithubConnectPage() {
   }
 
   return (
-    <main className=" mt-10 md:mt-32 grid place-items-center px-4 text-gray-100">
-      <section className="relative w-full max-w-md rounded-2xl bg-card shadow-lg p-8 transition-all hover:shadow-2xl">
+    <main className=" mt-10 md:mt-32 grid place-items-center px-4 ">
+      <section className="relative w-full max-w-md rounded-2xl glass border shadow-lg p-8 transition-all hover:shadow-2xl">
         <div className="flex justify-center mb-6">
           <Github
             className={`h-14 w-14 text-main transition-transform ${
@@ -110,7 +110,7 @@ export default function GithubConnectPage() {
         </header>
 
         <form onSubmit={onSubmit} className="space-y-5 relative">
-          <Label htmlFor="gh-username" className="text-gray-300 font-medium">
+          <Label htmlFor="gh-username" className=" font-medium">
             GitHub Username
           </Label>
           <div
@@ -123,7 +123,7 @@ export default function GithubConnectPage() {
               placeholder="octocat"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="border-0  text-white  focus-visible:ring-0 text-base"
+              className="border-0  focus-visible:ring-0 text-base"
             />
             <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
               <Github

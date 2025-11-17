@@ -37,12 +37,10 @@ export function GithubConnectionCard() {
   return (
     <Card
       className="
-        relative overflow-hidden border border-border/60 bg-card
-        transition-shadow duration-300 ease-out hover:shadow-lg
-        focus-within:ring-1 focus-within:ring-emerald-500/60 flex justify-center flex-col"
+        relative overflow-hidden glass flex justify-center flex-col"
     >      {isLoading && (
         <CardHeader>
-          <CardTitle className="text-base md:text-lg font-semibold text-white">
+          <CardTitle className="text-base md:text-lg font-semibold text-black dark:text-white">
             Checking GitHub connection...
           </CardTitle>
         </CardHeader>
@@ -52,7 +50,7 @@ export function GithubConnectionCard() {
           <CardTitle className="text-base md:text-lg font-semibold text-red-400">
             Failed to load GitHub connection
           </CardTitle>
-          <CardDescription className="text-sm text-gray-300">
+          <CardDescription className="text-sm text-black dark:text-gray-300">
             Please try again later
           </CardDescription>
         </CardHeader>
@@ -73,10 +71,10 @@ export function GithubConnectionCard() {
             />
           </div>
           <div>
-            <CardTitle className="text-base md:text-lg font-semibold text-white">
+            <CardTitle className="text-base md:text-lg font-semibold text-black dark:text-white">
               {connected ? "GitHub Connected" : "GitHub Not Connected"}
             </CardTitle>
-            <CardDescription className="text-sm text-gray-200 mt-1">
+            <CardDescription className="text-sm text-black/40 dark:text-gray-200 mt-1">
               {connected
                 ? "Your GitHub data is synced"
                 : "Connect GitHub to prefill your resume"}
@@ -105,7 +103,7 @@ export function GithubConnectionCard() {
               className={`h-5 w-5 transition-transform duration-500 ${
                 isRefreshing
                   ? "animate-spin text-teal-400"
-                  : "text-gray-200 hover:text-teal-400"
+                  : "text-black dark:text-gray-200 hover:text-teal-400"
               }`}
             />
           </Button>

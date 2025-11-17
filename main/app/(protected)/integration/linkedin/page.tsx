@@ -76,12 +76,12 @@ export default function LinkedIn() {
           <div className="flex items-center justify-center gap-6 mb-8">
             {/* Resume Builder Icon */}
             <motion.div
-              className="w-16 h-16 bg-white rounded-xl flex items-center justify-center"
+              className="w-16 h-16  rounded-xl flex items-center justify-center"
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <Network className="w-8 h-8 text-black" />
+              <Network className="w-8 h-8 t" />
             </motion.div>
 
             {/* Connection Line */}
@@ -91,11 +91,11 @@ export default function LinkedIn() {
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.8, delay: 0.8 }}
             >
-              <div className="w-12 h-0.5 bg-white" />
+              <div className="w-12 h-0.5 " />
               <motion.div animate={{ x: [0, 10, 0] }} transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}>
-                <ArrowRight className="w-5 h-5 text-white" />
+                <ArrowRight className="w-5 h-5 te" />
               </motion.div>
-              <div className="w-12 h-0.5 bg-white" />
+              <div className="w-12 h-0.5 " />
             </motion.div>
 
             {/* LinkedIn Icon */}
@@ -124,7 +124,7 @@ export default function LinkedIn() {
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight"
+            className="text-5xl md:text-7xl font-bold te mb-6 tracking-tight leading-tight"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: "easeOut", delay: 0.9 }}
@@ -152,14 +152,14 @@ export default function LinkedIn() {
         {/* Subtitle */}
         <motion.div variants={itemVariants} className="mb-12">
           <motion.p
-            className="text-xl md:text-2xl text-white max-w-3xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl te max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.5 }}
           >
             Transform your LinkedIn profile into a stunning resume in seconds.
             <br className="hidden md:block" />
-            <span className="font-semibold text-white">No more manual data entry.</span>
+            <span className="font-semibold te">No more manual data entry.</span>
           </motion.p>
         </motion.div>
 
@@ -168,19 +168,19 @@ export default function LinkedIn() {
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
-              className="group p-6 rounded-2xl bg-card border-2  flex  flex-col items-center hover:shadow-lg transition-all duration-300"
+              className="group p-6 rounded-2xl glass bg-card border-2  flex  flex-col items-center hover:shadow-lg transition-all duration-300"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.7 + index * 0.1 }}
               whileHover={{ y: -8, scale: 1.02 }}
             >
               <motion.div
-                className="w-12 h-12  rounded-xl  flex items-center justify-center mb-4 bg-main text-white transition-all duration-300"
+                className="w-12 h-12  rounded-xl  flex items-center justify-center mb-4 bg-main te transition-all duration-300"
                 whileHover={{ rotate: 5 }}
               >
                   <feature.icon className="w-6 h-6" />
               </motion.div>
-              <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+              <h3 className="text-lg font-semibold te mb-2">{feature.title}</h3>
               <p className="text-gray-300 text-sm leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}

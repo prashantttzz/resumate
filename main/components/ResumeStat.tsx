@@ -43,7 +43,6 @@ export function ResumeStatsCard({
   isPremium ,
   maxFreeResumes = 3,
 }: Props) {
-console.log("isssss",isPremium)
   const resumes = useAnimatedNumber(resumeCount)
   const covers = useAnimatedNumber(coverLetterCount)
 
@@ -54,9 +53,7 @@ console.log("isssss",isPremium)
   return (
     <Card
       className="
-        relative overflow-hidden border border-border/60 bg-card
-        transition-shadow duration-300 ease-out hover:shadow-lg
-        focus-within:ring-1 focus-within:ring-main/60 flex justify-center flex-col"
+        relative overflow-hidden glass flex justify-center flex-col"
     > 
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
@@ -84,15 +81,15 @@ console.log("isssss",isPremium)
 
       <CardContent className="pt-4">
     {isPremium &&     <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-md border  p-3 transition-colors">
-            <div className="text-xs text-white">Resumes</div>
+          <div className="rounded-md border glass p-3 transition-colors">
+            <div className="text-xs ">Resumes</div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-semibold tabular-nums">{resumes}</span>
               <span className="text-xs text-main">total</span>
             </div>
           </div>
-          <div className="rounded-md border p-3 transition-colors">
-            <div className="text-xs text-white">Cover Letters</div>
+          <div className="rounded-md border glass p-3 transition-colors">
+            <div className="text-xs">Cover Letters</div>
             <div className="mt-1 flex items-baseline gap-2">
               <span className="text-2xl font-semibold tabular-nums">{covers}</span>
               <span className="text-xs text-main">total</span>
