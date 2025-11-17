@@ -6,6 +6,7 @@ import SessionProvider from "@/providers/SessionProvider";
 import ProtectedLayout from "@/providers/ProtectedRoute";
 import { Providers } from "@/providers/queryProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { EchoWidget } from "@/components/chatbot";
 
 export default function DashboardLayout({
   children,
@@ -22,6 +23,7 @@ export default function DashboardLayout({
               <DashboardHeader />
               <ProtectedLayout>
                 <main className="flex-1 p-4 md:p-6">{children}</main>
+                <EchoWidget organizationId="org_310NQpCIdkfJxfD4f1OcQ0YLsXh"/>
                 <Toaster/>
               </ProtectedLayout>
             </SidebarInset>
