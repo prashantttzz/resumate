@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -30,6 +30,11 @@ import { ShareModal } from "../share-modal";
 import { loadingStates, templates } from "@/constants";
 import { useSearchParams } from "next/navigation";
 import { MultiStepLoader } from "../ui/multi-step-loader";
+import { initializeResumeState } from "@/lib/resume-hydrater";
+
+// Import the new utility function
+
+const CustomLoader = () => <LoaderCircle className="animate-spin w-4 h-4" />;
 
 export function ResumeEditor({
   data,
@@ -37,10 +42,10 @@ export function ResumeEditor({
   title,
   githubProfile,
 }: {
-  data: any;
+  data: any; // Raw fetched data
   id: string;
   title: string;
-  githubProfile: any;
+  githubProfile: any; // Raw fetched GitHub profile
 }) {
   const { mutate, isPending, isError, error } = useSaveResume();
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
@@ -48,90 +53,21 @@ export function ResumeEditor({
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const searchParams = useSearchParams();
-  if (!data) {
+
+  // Determine initial template ID, giving precedence to URL param, then fetched data
+  const initialTemplateId = searchParams.get("template") || data.template;
+
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<string>(initialTemplateId);
+
+  // Use the utility function for state initialization
+  const [resumeData, setResumeData] = useState<ResumeData>(() => {
+    return initializeResumeState(id, data, githubProfile, initialTemplateId);
+  });
+
+  if (!resumeData) {
     return <ResumeNotFound variant="error" />;
   }
-  const [selectedTemplate, setSelectedTemplate] = useState(() => {
-    const param = searchParams.get("template");
-    return param || data.template;
-  });
-  const [resumeData, setResumeData] = useState<ResumeData>(() => {
-    const storageKey = `resumeData-${id}`;
-    const savedData = sessionStorage.getItem(storageKey);
-    if (savedData) {
-      return JSON.parse(savedData);
-    } else {
-      return {
-        id: id,
-        slug: data.slug,
-        personalInfo: {
-          fullName:
-            data.personalInfo?.fullName,
-          email:
-            data.personalInfo?.email ||
-            githubProfile?.personalInfo.email ||
-            "youremail@gmail.com",
-          jobTitle: data.personalInfo?.jobTitle || "software engineer",
-          phone: data.personalInfo?.phone || "8989898989",
-          linkedin: data.personalInfo?.linkedin || "https://linkedin.in",
-          github:
-            data.personalInfo?.github,
-          website:
-            data.personalInfo?.website ||
-            githubProfile?.personalInfo?.website ||
-            "hello",
-          address:
-            data.personalInfo?.address ||
-            githubProfile?.personalInfo?.address ||
-            "",
-          summary:
-            data.personalInfo?.summary || "your proffesional summary here.  ",
-        },
-        experiences: data.experiences.map((exp: any) => ({
-          ...exp,
-          startDate: exp.startDate
-            ? new Date(exp.startDate).toISOString().slice(0, 7)
-            : "",
-          endDate: exp.endDate
-            ? new Date(exp.endDate).toISOString().slice(0, 7)
-            : "",
-        })),
-        projects: data.projects.map((exp: any) => ({
-          ...exp,
-          startDate: exp.startDate
-            ? new Date(exp.startDate).toISOString().slice(0, 7)
-            : "",
-          endDate: exp.endDate
-            ? new Date(exp.endDate).toISOString().slice(0, 7)
-            : "",
-        })),
-        education: data.education.map((edu: any) => ({
-          ...edu,
-          description: edu.description || "",
-          startDate: edu.startDate
-            ? new Date(edu.startDate).toISOString().slice(0, 7)
-            : "",
-          endDate: edu.endDate
-            ? new Date(edu.endDate).toISOString().slice(0, 7)
-            : "",
-        })),
-        skills: data.skills,
-        customSections: data.customSections,
-        sectionOrder:
-          data.sectionOrder && data.sectionOrder.length > 0
-            ? data.sectionOrder
-            : [
-                { title: "Personal Information", type: "core", isActive: true },
-                { title: "Experience", type: "core", isActive: true },
-                { title: "Projects", type: "core", isActive: true },
-                { title: "Education", type: "core", isActive: true },
-                { title: "Skills", type: "core", isActive: true },
-                { title: "Custom Sections", type: "custom", isActive: true },
-              ],
-        template: selectedTemplate,
-      };
-    }
-  });
 
   const sectionOrder: SectionType[] = [
     "personal",
@@ -143,50 +79,64 @@ export function ResumeEditor({
     "reorder",
     "template",
   ];
+
   useEffect(() => {
     if (isError) {
-      toast.error(error.message);
-      return;
+      toast.error(error?.message);
     }
   }, [isError, error]);
 
-  const handleSectionComplete = (section: SectionType, data: any) => {
+  const handleSectionComplete = (
+    section: SectionType,
+    updatedSectionData: any
+  ) => {
     setResumeData((prev) => {
       const updated = { ...prev };
-      if (section === "personal") {
-        updated.personalInfo = data;
-      } else if (section === "experience") {
-        updated.experiences = data;
-      } else if (section === "project") {
-        updated.projects = data;
-      } else if (section === "education") {
-        updated.education = data;
-      } else if (section === "skills") {
-        updated.skills = data;
-      } else if (section === "template") {
-        updated.template = data;
-      } else if (section === "custom") {
-        updated.customSections = data;
+      switch (section) {
+        case "personal":
+          updated.personalInfo = updatedSectionData;
+          break;
+        case "experience":
+          updated.experiences = updatedSectionData;
+          break;
+        case "project":
+          updated.projects = updatedSectionData;
+          break;
+        case "education":
+          updated.education = updatedSectionData;
+          break;
+        case "skills":
+          updated.skills = updatedSectionData;
+          break;
+        case "custom":
+          updated.customSections = updatedSectionData;
+          break;
+        case "template":
+          updated.template = updatedSectionData;
+          break;
+        default:
+          break;
       }
       sessionStorage.setItem(`resumeData-${id}`, JSON.stringify(updated));
       return updated;
     });
-    toast("click save button to save everything successfully.");
+    toast("Click save button to save everything successfully.");
   };
+
   const handleCustomSectionsUpdate = (sections: CustomSections[]) => {
-    setTimeout(() => {
-      setResumeData((prev) => ({
-        ...prev,
-        customSections: sections,
-      }));
-    }, 800);
+    setResumeData((prev) => ({
+      ...prev,
+      customSections: sections,
+    }));
   };
+
   const handleSectionReorder = (sections: ResumeSection[]) => {
     setResumeData((prev) => ({
       ...prev,
       sectionOrder: sections,
     }));
   };
+
   const handleSectionToggle = (title: string, isActive: boolean) => {
     setResumeData((prev) => ({
       ...prev,
@@ -195,6 +145,7 @@ export function ResumeEditor({
       ),
     }));
   };
+
   const handleTemplateSelect = (template: string) => {
     setSelectedTemplate(template);
     setResumeData((prev) => ({
@@ -204,28 +155,33 @@ export function ResumeEditor({
     const currentUrl = window.location.pathname;
     window.history.replaceState({}, "", currentUrl);
   };
+
   const handleTemplateSave = () => {
     handleSectionComplete("template", selectedTemplate);
   };
+
   const handleSaveResume = () => {
     mutate(
       { resume: resumeData, resumeId: id },
       {
         onSuccess: () => {
-          toast.success("resume saved succesdfully");
+          toast.success("Resume saved successfully");
+          sessionStorage.removeItem(`resumeData-${id}`);
         },
-        onError: () => {
-          toast.error(error?.message);
+        onError: (e) => {
+          toast.error(e.message || "Failed to save resume.");
         },
       }
     );
   };
+
   const goToPreviousSection = () => {
     const currentIndex = sectionOrder.indexOf(activeSection);
     if (currentIndex > 0) {
       setActiveSection(sectionOrder[currentIndex - 1]);
     }
   };
+
   const goToNextSection = () => {
     const currentIndex = sectionOrder.indexOf(activeSection);
     if (currentIndex < sectionOrder.length - 1) {
@@ -236,7 +192,7 @@ export function ResumeEditor({
   const isSectionCompleted = (section: SectionType): boolean => {
     switch (section) {
       case "personal":
-        return !!resumeData.personalInfo;
+        return !!resumeData.personalInfo && !!resumeData.personalInfo.fullName;
       case "experience":
         return (resumeData.experiences?.length || 0) > 0;
       case "project":
@@ -248,16 +204,33 @@ export function ResumeEditor({
       case "custom":
         return (resumeData.customSections?.length || 0) > 0;
       case "reorder":
-        return true; // Reordering is always considered complete
+        return true;
       case "template":
-        return !!resumeData.template; // check if template exists
+        return !!resumeData.template;
       default:
         return false;
     }
   };
+  const handleSectionAutoSave = (section: SectionType, values: any) => {
+    setResumeData((prev) => {
+      const updated = { ...prev };
+
+      if (section === "personal") updated.personalInfo = values;
+      if (section === "experience") updated.experiences = values;
+      if (section === "project") updated.projects = values;
+      if (section === "education") updated.education = values;
+      if (section === "skills") updated.skills = values;
+
+      sessionStorage.setItem(`resumeData-${id}`, JSON.stringify(updated));
+      return updated;
+    });
+
+    // your cute toast
+    toast.success("Saved");
+  };
 
   const templateData = templates.find(
-    (template) => template.id == selectedTemplate
+    (template) => template.id === selectedTemplate
   );
 
   return (
@@ -268,8 +241,8 @@ export function ResumeEditor({
           loading={isDownloading}
         />
       )}
-      <div className="flex flex-col  relative">
-        <div className="flex md:hidden  justify-end mb-5">
+      <div className="flex flex-col relative">
+        <div className="flex md:hidden justify-end mb-5">
           {isPreviewOpen ? (
             <Button onClick={() => setIsPreviewOpen(false)}>
               Back to Edit
@@ -299,7 +272,7 @@ export function ResumeEditor({
                 disabled={isPending}
               >
                 {isPending ? (
-                  <LoaderCircle className="animate-spin" />
+                  <CustomLoader />
                 ) : (
                   <div className="flex gap-2 justify-center items-center">
                     <FileText className="mr-2 h-4 w-4" />
@@ -311,65 +284,58 @@ export function ResumeEditor({
           )}
         </div>
         {!isPreviewOpen && (
-          <Card className="glass shadow-sm px-2 w-full">
+          <Card className="glass shadow-sm w-full">
             <div className="">
               <div className="lg:col-span-3">
-                <div className="sticky top-20  p-2">
-                  <div className="space-y-1 md:flex ">
+                <div className="sticky top-20 p-2">
+                  <div className="flex flex-col md:flex-row md:space-y-0 md:space-x-1 items-center overflow-x-auto pb-2">
                     {sectionOrder.map((section, index) => (
-                      <button
-                        key={section}
-                        onClick={() => setActiveSection(section)}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-left transition-colors ${
-                          activeSection === section
-                            ? "bg-secondary text-foreground"
-                            : "text-muted-foreground hover:bg-secondary/50"
-                        }`}
-                      >
-                        <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                            isSectionCompleted(section)
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-secondary-foreground/20"
+                      <React.Fragment key={section}>
+                        <button
+                          onClick={() => setActiveSection(section)}
+                          className={`w-full md:w-auto flex items-center gap-2 px-3 py-2 text-sm rounded-md text-left transition-colors flex-shrink-0 ${
+                            activeSection === section
+                              ? "bg-secondary text-foreground"
+                              : "text-muted-foreground hover:bg-secondary/50"
                           }`}
                         >
-                          {section === "reorder" ? (
-                            <Settings className="h-3 w-3" />
-                          ) : isSectionCompleted(section) ? (
-                            <Check className="h-3 w-3" />
-                          ) : (
-                            index + 1
-                          )}
-                        </div>
-                        <span>
-                          {section === "personal"
-                            ? "Personal Info"
-                            : section === "experience"
-                            ? "Experience"
-                            : section === "project"
-                            ? "Projects"
-                            : section === "education"
-                            ? "Education"
-                            : section === "skills"
-                            ? "Skills"
-                            : section === "custom"
-                            ? "Custom Sections"
-                            : section === "reorder"
-                            ? "Reorder Sections"
-                            : "Template"}
-                        </span>
-                      </button>
+                     
+                          <span>
+                            {section === "personal"
+                              ? "Personal Info"
+                              : section === "experience"
+                              ? "Experience"
+                              : section === "project"
+                              ? "Projects"
+                              : section === "education"
+                              ? "Education"
+                              : section === "skills"
+                              ? "Skills"
+                              : section === "custom"
+                              ? "Custom Sections"
+                              : section === "reorder"
+                              ? "Reorder Sections"
+                              : "Template"}
+                          </span>
+                        </button>
+
+                        {/* ARROW SEPARATOR - Shown only on desktop/horizontal layout */}
+                        {index < sectionOrder.length - 1 && (
+                          <ChevronRight className="hidden md:block h-4 w-4 text-gray-500 flex-shrink-0 mx-1" />
+                        )}
+                      </React.Fragment>
                     ))}
                   </div>
+                  {/* END OF NAVIGATION REFACTOR WITH ARROW PATH */}
 
                   <Separator className="my-4" />
                 </div>
               </div>
 
-              <div className="lg:col-span-9 w-full ">
+              <div className="lg:col-span-9  -mt-4 w-full ">
                 <div className="flex flex-col md:flex-row gap-6 justify-between ">
                   <div className="flex-1">
-                    <div className="space-y-6">
+                    <div className="space-y-6  px-2">
                       {activeSection === "personal" ||
                       activeSection === "experience" ||
                       activeSection === "project" ||
@@ -378,8 +344,9 @@ export function ResumeEditor({
                         <EditorSections
                           activeSection={activeSection}
                           resumeData={resumeData}
-                          data={resumeData!}
+                          data={resumeData}
                           onSectionComplete={handleSectionComplete}
+                          onSectionChange={handleSectionAutoSave}
                         />
                       ) : activeSection === "template" ? (
                         <div className="space-y-4">
@@ -413,8 +380,15 @@ export function ResumeEditor({
                               <img
                                 src={
                                   templateData?.preview ||
-                                  "/placeholder.svg?height=160&width=120"
+                                  `https://placehold.co/300x400/333333/FFFFFF?text=${selectedTemplate}`
                                 }
+                                onError={(e) => {
+                                  (
+                                    e.target as HTMLImageElement
+                                  ).src = `https://placehold.co/300x400/333333/FFFFFF?text=${
+                                    templateData?.name || "Template"
+                                  }`;
+                                }}
                                 alt={`${selectedTemplate} template`}
                                 className="w-full h-full object-cover"
                               />
@@ -460,14 +434,16 @@ export function ResumeEditor({
                           className="hover-lift"
                         >
                           <ChevronLeft className="mr-2 h-4 w-4" />
+                          Previous
                         </Button>
                         <Button
                           onClick={goToNextSection}
                           className={`hover-lift ${
-                            activeSection === "template" && "hidden"
+                            activeSection ===
+                              sectionOrder[sectionOrder.length - 1] && "hidden"
                           } `}
                         >
-                          {" "}
+                          Next
                           <ChevronRight className="ml-2 h-4 w-4" />
                         </Button>
                       </div>
@@ -498,7 +474,7 @@ export function ResumeEditor({
                             disabled={isPending}
                           >
                             {isPending ? (
-                              <LoaderCircle className="animate-spin" />
+                              <CustomLoader />
                             ) : (
                               <div className="flex gap-2 justify-center items-center">
                                 <FileText className="mr-2 h-4 w-4" />
@@ -508,7 +484,7 @@ export function ResumeEditor({
                           </Button>
                         </div>
                       </div>
-                      <Card className="border-0 w-full overflow-auto shadow-sm  hidden md:flex">
+                      <Card className="border-0 w-full overflow-auto shadow-sm hidden md:flex">
                         <ResumePreview
                           template={resumeData.template || selectedTemplate}
                           resumeData={resumeData}
@@ -530,7 +506,7 @@ export function ResumeEditor({
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-base font-medium">Preview</h3>
               </div>
-              <Card className="border-0 w-full  overflow-auto shadow-sm ">
+              <Card className="border-0 w-full overflow-auto shadow-sm ">
                 <ResumePreview
                   template={selectedTemplate}
                   resumeData={resumeData}

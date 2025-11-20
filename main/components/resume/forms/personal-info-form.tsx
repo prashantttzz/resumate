@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { WandSparkles } from "lucide-react";
-import { callResumeAI } from "@/lib/utils";
-import { useState } from "react";
+import { callResumeAI, debounce } from "@/lib/utils";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   Tooltip,
@@ -69,12 +69,12 @@ export type PersonalInfoFormValues = z.infer<typeof formSchema>;
 
 interface PersonalInfoFormProps {
   defaultValues: Partial<PersonalInfoFormValues>;
-  onSubmit: (values: PersonalInfoFormValues) => void;
+  onChange?: (values: Partial<PersonalInfoFormValues>) => void;
 }
 
 export function PersonalInfoForm({
   defaultValues,
-  onSubmit,
+  onChange,
 }: PersonalInfoFormProps) {
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(formSchema),
@@ -94,6 +94,24 @@ export function PersonalInfoForm({
 
   const [loading, setLoading] = useState(false);
 
+  const debouncedSave = useMemo(
+    () =>
+      debounce((values) => {
+        if (onChange) {
+          onChange(values);
+          toast.success("Saved");
+        }
+      }, 800),
+    [onChange]
+  );
+
+  useEffect(() => {
+    const sub = form.watch((values) => {
+      debouncedSave(values);
+    });
+
+    return () => sub.unsubscribe();
+  }, [form.watch]);
   const handlesummary = async (aiPrompt: string) => {
     try {
       setLoading(true);
@@ -108,7 +126,7 @@ export function PersonalInfoForm({
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}
@@ -184,7 +202,9 @@ export function PersonalInfoForm({
             name="github"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Github  <span className="text-white/60">(optional)</span></FormLabel>
+                <FormLabel>
+                  Github <span className="text-white/60">(optional)</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://github.com/in/johndoe"
@@ -203,7 +223,9 @@ export function PersonalInfoForm({
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website  <span className="text-white/60">(optional)</span></FormLabel>
+                <FormLabel>
+                  Website <span className="text-white/60">(optional)</span>
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="https://johndoe.com" {...field} />
                 </FormControl>
@@ -216,7 +238,9 @@ export function PersonalInfoForm({
             name="linkedin"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>LinkedIn  <span className="text-white/60">(optional)</span></FormLabel>
+                <FormLabel>
+                  LinkedIn <span className="text-white/60">(optional)</span>
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://linkedin.com/in/johndoe"
@@ -272,11 +296,6 @@ export function PersonalInfoForm({
             </FormItem>
           )}
         />
-        <div className="flex  justify-end">
-          <Button type="submit" className="hover-lift ">
-            Save & Continue
-          </Button>
-        </div>
       </form>
     </Form>
   );

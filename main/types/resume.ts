@@ -34,6 +34,7 @@ export type resume = {
     skills: SkillCategory[];
     customSections: CustomSections[];
     sectionOrder: ResumeSection[];
+    title?:string;  
     template: string;
     slug?: string;
   };

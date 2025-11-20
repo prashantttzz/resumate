@@ -161,3 +161,11 @@ export async function generateCoverletter({
     throw err;
   }
 }
+
+export  function debounce(fn: (...args: any[]) => void, delay = 800) {
+  let timer: any;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}

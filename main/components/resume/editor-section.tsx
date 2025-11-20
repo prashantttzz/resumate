@@ -12,10 +12,11 @@ interface EditorSectionsProps {
   activeSection: SectionType
   resumeData: ResumeData
   data:ResumeData
+  onSectionChange?: (section: SectionType, data: any) => void;
   onSectionComplete: (section: SectionType, data: any) => void
 }
 
-export function EditorSections({ activeSection, resumeData, onSectionComplete ,data}: EditorSectionsProps) {
+export function EditorSections({ activeSection, resumeData, onSectionComplete ,data,onSectionChange}: EditorSectionsProps) {
   const data_personal = data.personalInfo;
   const [personalData, setPersonalData] = useState(resumeData.personalInfo ||{})
   const [experienceData, setExperienceData] = useState(resumeData.experiences || [])
@@ -62,8 +63,10 @@ export function EditorSections({ activeSection, resumeData, onSectionComplete ,d
       {activeSection === "personal" && (
         <div>
           <h3 className="text-lg font-medium mb-4">Personal Information</h3>
-          <PersonalInfoForm defaultValues={personalData} onSubmit={handlePersonalSubmit} />
-        </div>
+<PersonalInfoForm
+  defaultValues={personalData}
+  onChange={(v) => onSectionChange?.("personal", v)}
+/>        </div>
       )}
 
       {activeSection === "experience" && (

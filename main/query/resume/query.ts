@@ -23,9 +23,7 @@ import { CoverLetterProps, ResumeData } from "@/types/resume";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-// --------------------
-// QUERY KEYS
-// --------------------
+
 export const QUERY_KEYS = {
   RESUME: {
     ALL: ["resumes"] as const,
