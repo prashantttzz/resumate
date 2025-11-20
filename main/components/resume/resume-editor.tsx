@@ -12,6 +12,9 @@ import {
   FileText,
   Settings,
   LoaderCircle,
+  CheckIcon,
+  XIcon,
+  Edit3Icon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -22,7 +25,7 @@ import {
 } from "@/components/resume/section-reorder";
 import { EditorSections } from "./editor-section";
 import { toast } from "sonner";
-import { useSaveResume } from "@/query/resume/query";
+import { useSaveResume, useUpdateTitle } from "@/query/resume/query";
 import { CustomSections, ResumeData, SectionType } from "@/types/resume";
 import { CustomSectionBuilder } from "./custom-section-builder";
 import { ResumeNotFound } from "../error";
@@ -32,8 +35,6 @@ import { useSearchParams } from "next/navigation";
 import { MultiStepLoader } from "../ui/multi-step-loader";
 import { initializeResumeState } from "@/lib/resume-hydrater";
 
-// Import the new utility function
-
 const CustomLoader = () => <LoaderCircle className="animate-spin w-4 h-4" />;
 
 export function ResumeEditor({
@@ -42,10 +43,10 @@ export function ResumeEditor({
   title,
   githubProfile,
 }: {
-  data: any; // Raw fetched data
+  data: any;
   id: string;
   title: string;
-  githubProfile: any; // Raw fetched GitHub profile
+  githubProfile: any;
 }) {
   const { mutate, isPending, isError, error } = useSaveResume();
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
@@ -54,13 +55,11 @@ export function ResumeEditor({
   const [isDownloading, setIsDownloading] = useState(false);
   const searchParams = useSearchParams();
 
-  // Determine initial template ID, giving precedence to URL param, then fetched data
   const initialTemplateId = searchParams.get("template") || data.template;
 
   const [selectedTemplate, setSelectedTemplate] =
     useState<string>(initialTemplateId);
 
-  // Use the utility function for state initialization
   const [resumeData, setResumeData] = useState<ResumeData>(() => {
     return initializeResumeState(id, data, githubProfile, initialTemplateId);
   });
@@ -241,7 +240,7 @@ export function ResumeEditor({
           loading={isDownloading}
         />
       )}
-      <div className="flex flex-col relative">
+      <div className="relative">
         <div className="flex md:hidden justify-end mb-5">
           {isPreviewOpen ? (
             <Button onClick={() => setIsPreviewOpen(false)}>
@@ -284,217 +283,184 @@ export function ResumeEditor({
           )}
         </div>
         {!isPreviewOpen && (
-          <Card className="glass shadow-sm w-full">
-            <div className="">
-              <div className="lg:col-span-3">
-                <div className="sticky top-20 p-2">
-                  <div className="flex flex-col md:flex-row md:space-y-0 md:space-x-1 items-center overflow-x-auto pb-2">
-                    {sectionOrder.map((section, index) => (
-                      <React.Fragment key={section}>
-                        <button
-                          onClick={() => setActiveSection(section)}
-                          className={`w-full md:w-auto flex items-center gap-2 px-3 py-2 text-sm rounded-md text-left transition-colors flex-shrink-0 ${
-                            activeSection === section
-                              ? "bg-secondary text-foreground"
-                              : "text-muted-foreground hover:bg-secondary/50"
-                          }`}
-                        >
-                     
-                          <span>
-                            {section === "personal"
-                              ? "Personal Info"
-                              : section === "experience"
-                              ? "Experience"
-                              : section === "project"
-                              ? "Projects"
-                              : section === "education"
-                              ? "Education"
-                              : section === "skills"
-                              ? "Skills"
-                              : section === "custom"
-                              ? "Custom Sections"
-                              : section === "reorder"
-                              ? "Reorder Sections"
-                              : "Template"}
-                          </span>
-                        </button>
+          <Card className="border-0  bg-transparent w-full">
+            <div className="sticky flex justify-between items-center">
+              <div className="flex flex-col w-full md:flex-row flex-wrap md:space-y-0 md:space-x-1 items-center overflow-x-auto pb-2">
+                {sectionOrder.map((section, index) => (
+                  <React.Fragment key={section}>
+                    <button
+                      onClick={() => setActiveSection(section)}
+                      className={`w-full md:w-auto flex items-center gap-2 px-3 py-2 text-sm rounded-md text-left transition-colors flex-shrink-0 ${
+                        activeSection === section
+                          ? "bg-secondary text-foreground"
+                          : "text-muted-foreground hover:bg-secondary/50"
+                      }`}
+                    >
+                      <span>
+                        {section === "personal"
+                          ? "Personal Info"
+                          : section === "experience"
+                          ? "Experience"
+                          : section === "project"
+                          ? "Projects"
+                          : section === "education"
+                          ? "Education"
+                          : section === "skills"
+                          ? "Skills"
+                          : section === "custom"
+                          ? "Custom Sections"
+                          : section === "reorder"
+                          ? "Reorder Sections"
+                          : "Template"}
+                      </span>
+                    </button>
 
-                        {/* ARROW SEPARATOR - Shown only on desktop/horizontal layout */}
-                        {index < sectionOrder.length - 1 && (
-                          <ChevronRight className="hidden md:block h-4 w-4 text-gray-500 flex-shrink-0 mx-1" />
-                        )}
-                      </React.Fragment>
-                    ))}
+                    {index < sectionOrder.length - 1 && (
+                      <ChevronRight className="hidden md:block h-4 w-4 text-gray-500 flex-shrink-0 mx-1" />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+              <div className=" hidden md:flex gap-2">
+                <Button variant="outline" size="sm" className="hover-lift">
+                  <ShareModal
+                    resumeId={id}
+                    resumeName={title}
+                    setIsDownloading={setIsDownloading}
+                  />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="hover-lift"
+                  onClick={handleSaveResume}
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <CustomLoader />
+                  ) : (
+                    <div className="flex gap-2 justify-center items-center">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Save
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </div>
+            <Separator className="my-2 " />
+
+            <div className="flex  justify-between gap-10">
+              <div className="flex flex-col flex-1 ">
+                <div className="w-full ">
+                  <div className="flex flex-col md:flex-row gap-6 justify-between ">
+                    <div className="flex-1">
+                      <div className="space-y-6 glass !border-2 border-white/70 drop-shadow-lg p-5 rounded-xl bg-card">
+                        {activeSection === "personal" ||
+                        activeSection === "experience" ||
+                        activeSection === "project" ||
+                        activeSection === "education" ||
+                        activeSection === "skills" ? (
+                          <EditorSections
+                            activeSection={activeSection}
+                            resumeData={resumeData}
+                            data={resumeData}
+                            onSectionComplete={handleSectionComplete}
+                            onSectionChange={handleSectionAutoSave}
+                          />
+                        ) : activeSection === "template" ? (
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-lg font-medium">
+                                Current Template
+                              </h3>
+                              <Dialog
+                                open={isTemplateDialogOpen}
+                                onOpenChange={setIsTemplateDialogOpen}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button variant="outline" size="sm">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Browse Templates
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-7xl p-0 h-[95%]">
+                                  <TemplateBrowser
+                                    selectedTemplate={selectedTemplate}
+                                    onSelectTemplate={handleTemplateSelect}
+                                    onClose={() =>
+                                      setIsTemplateDialogOpen(false)
+                                    }
+                                    isDialog={true}
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+
+                            <Card className="overflow-hidden border-0 shadow-sm">
+                              <div className="relative h-40 overflow-hidden bg-white">
+                                <img
+                                  src={
+                                    templateData?.preview ||
+                                    `https://placehold.co/300x400/333333/FFFFFF?text=${selectedTemplate}`
+                                  }
+                                  onError={(e) => {
+                                    (
+                                      e.target as HTMLImageElement
+                                    ).src = `https://placehold.co/300x400/333333/FFFFFF?text=${
+                                      templateData?.name || "Template"
+                                    }`;
+                                  }}
+                                  alt={`${selectedTemplate} template`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="p-4">
+                                <h3 className="font-medium capitalize">
+                                  {templateData?.name}
+                                </h3>
+                                <p className="text-sm text-slate-300">
+                                  {templateData?.description}
+                                </p>
+                              </div>
+                            </Card>
+
+                            <Button
+                              onClick={handleTemplateSave}
+                              className="w-full"
+                            >
+                              Continue with this Template
+                              <ChevronRight className="ml-2 h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : activeSection === "custom" ? (
+                          <CustomSectionBuilder
+                            initialSections={resumeData.customSections}
+                            onSave={handleCustomSectionsUpdate}
+                            onSectionComplete={handleSectionComplete}
+                            isLoading={isPending}
+                          />
+                        ) : activeSection === "reorder" ? (
+                          <SectionReorder
+                            sections={resumeData.sectionOrder}
+                            onReorder={handleSectionReorder}
+                            onToggleSection={handleSectionToggle}
+                          />
+                        ) : null}
+                      </div>
+                    </div>
                   </div>
-                  {/* END OF NAVIGATION REFACTOR WITH ARROW PATH */}
-
-                  <Separator className="my-4" />
                 </div>
               </div>
-
-              <div className="lg:col-span-9  -mt-4 w-full ">
-                <div className="flex flex-col md:flex-row gap-6 justify-between ">
-                  <div className="flex-1">
-                    <div className="space-y-6  px-2">
-                      {activeSection === "personal" ||
-                      activeSection === "experience" ||
-                      activeSection === "project" ||
-                      activeSection === "education" ||
-                      activeSection === "skills" ? (
-                        <EditorSections
-                          activeSection={activeSection}
-                          resumeData={resumeData}
-                          data={resumeData}
-                          onSectionComplete={handleSectionComplete}
-                          onSectionChange={handleSectionAutoSave}
-                        />
-                      ) : activeSection === "template" ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-medium">
-                              Current Template
-                            </h3>
-                            <Dialog
-                              open={isTemplateDialogOpen}
-                              onOpenChange={setIsTemplateDialogOpen}
-                            >
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  <FileText className="mr-2 h-4 w-4" />
-                                  Browse Templates
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-7xl p-0 h-[95%]">
-                                <TemplateBrowser
-                                  selectedTemplate={selectedTemplate}
-                                  onSelectTemplate={handleTemplateSelect}
-                                  onClose={() => setIsTemplateDialogOpen(false)}
-                                  isDialog={true}
-                                />
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-
-                          <Card className="overflow-hidden border-0 shadow-sm">
-                            <div className="relative h-40 overflow-hidden bg-white">
-                              <img
-                                src={
-                                  templateData?.preview ||
-                                  `https://placehold.co/300x400/333333/FFFFFF?text=${selectedTemplate}`
-                                }
-                                onError={(e) => {
-                                  (
-                                    e.target as HTMLImageElement
-                                  ).src = `https://placehold.co/300x400/333333/FFFFFF?text=${
-                                    templateData?.name || "Template"
-                                  }`;
-                                }}
-                                alt={`${selectedTemplate} template`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium capitalize">
-                                {templateData?.name}
-                              </h3>
-                              <p className="text-sm text-slate-300">
-                                {templateData?.description}
-                              </p>
-                            </div>
-                          </Card>
-
-                          <Button
-                            onClick={handleTemplateSave}
-                            className="w-full"
-                          >
-                            Continue with this Template
-                            <ChevronRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : activeSection === "custom" ? (
-                        <CustomSectionBuilder
-                          initialSections={resumeData.customSections}
-                          onSave={handleCustomSectionsUpdate}
-                          onSectionComplete={handleSectionComplete}
-                          isLoading={isPending}
-                        />
-                      ) : activeSection === "reorder" ? (
-                        <SectionReorder
-                          sections={resumeData.sectionOrder}
-                          onReorder={handleSectionReorder}
-                          onToggleSection={handleSectionToggle}
-                        />
-                      ) : null}
-
-                      <div className="flex justify-between pt-4">
-                        <Button
-                          variant="outline"
-                          onClick={goToPreviousSection}
-                          disabled={activeSection === sectionOrder[0]}
-                          className="hover-lift"
-                        >
-                          <ChevronLeft className="mr-2 h-4 w-4" />
-                          Previous
-                        </Button>
-                        <Button
-                          onClick={goToNextSection}
-                          className={`hover-lift ${
-                            activeSection ===
-                              sectionOrder[sectionOrder.length - 1] && "hidden"
-                          } `}
-                        >
-                          Next
-                          <ChevronRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-7 hidden md:flex">
-                    <div className="sticky top-20">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-base font-medium">Preview</h3>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="hover-lift"
-                          >
-                            <ShareModal
-                              resumeId={id}
-                              resumeName={title}
-                              setIsDownloading={setIsDownloading}
-                            />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="hover-lift"
-                            onClick={handleSaveResume}
-                            disabled={isPending}
-                          >
-                            {isPending ? (
-                              <CustomLoader />
-                            ) : (
-                              <div className="flex gap-2 justify-center items-center">
-                                <FileText className="mr-2 h-4 w-4" />
-                                Save
-                              </div>
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                      <Card className="border-0 w-full overflow-auto shadow-sm hidden md:flex">
-                        <ResumePreview
-                          template={resumeData.template || selectedTemplate}
-                          resumeData={resumeData}
-                          sectionOrder={resumeData.sectionOrder.filter(
-                            (s) => s.isActive
-                          )}
-                        />
-                      </Card>
-                    </div>
-                  </div>
+              <div className=" hidden md:flex ">
+                <div className="sticky top-20">
+                  <div className="flex w-full items-end justify-end  mb-2"></div>
+                  <ResumePreview
+                    template={resumeData.template || selectedTemplate}
+                    resumeData={resumeData}
+                    sectionOrder={resumeData.sectionOrder.filter(
+                      (s) => s.isActive
+                    )}
+                  />
                 </div>
               </div>
             </div>

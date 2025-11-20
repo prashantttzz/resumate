@@ -99,7 +99,6 @@ export function PersonalInfoForm({
       debounce((values) => {
         if (onChange) {
           onChange(values);
-          toast.success("Saved");
         }
       }, 800),
     [onChange]

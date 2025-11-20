@@ -127,13 +127,13 @@ export function ResumePreview({
   }
 
   return (
-  <div className="overflow-auto w-full h-full bg-neutral-100">
+  <div className="overflow-auto h-full bg-neutral-100">
     <div
       style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
       ref={containerRef}
     >
-      <div className="resume-preview">
-        <div className="page scale-95">
+      <div className="resume-preview scale-95 relative">
+        <div className="page ">
           <TemplateComponent
             personal={personal}
             experiences={experiences}

@@ -22,7 +22,7 @@ export default function DashboardLayout({
               <AppSidebar />
               <SidebarInset>
                 <DashboardHeader />
-                <main className="flex-1 p-5">{children}</main>
+                <main className="flex-1 p-2">{children}</main>
               </SidebarInset>
             </SidebarProvider>
             <EchoWidget organizationId="org_310NQpCIdkfJxfD4f1OcQ0YLsXh" />
