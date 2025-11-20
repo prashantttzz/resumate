@@ -13,6 +13,7 @@ export default function GithubConnectPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isDissConnecting, setIsDissConnecting] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [shake, setShake] = useState(false);
@@ -46,11 +47,6 @@ export default function GithubConnectPage() {
       if (json.success) {
         setConnectedUsername(username);
         setSuccessOpen(true);
-        const timer = setTimeout(() => {
-          setSuccessOpen(false);
-          router.push("/dashboard");
-        }, 1800);
-        return () => clearTimeout(timer);
       } else {
         throw new Error("GitHub connection failed");
       }
@@ -61,6 +57,36 @@ export default function GithubConnectPage() {
       setTimeout(() => setShake(false), 400);
     } finally {
       setIsConnecting(false);
+    }
+  }
+
+  async function disconnectGithub() {
+    if (!connectedUsername) return;
+
+    setIsDissConnecting(true);
+    setErrorOpen(false);
+
+    try {
+      const res = await fetch(`/api/github-resume/${connectedUsername}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Failed to disconnect");
+
+      setConnectedUsername(null);
+      setUsername("");
+      setSuccessOpen(true);
+
+      setTimeout(() => {
+        setSuccessOpen(false);
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      setErrorOpen(true);
+      setShake(true);
+      setTimeout(() => setShake(false), 400);
+    } finally {
+      setIsDissConnecting(false);
     }
   }
 
@@ -78,7 +104,7 @@ export default function GithubConnectPage() {
   }
 
   return (
-    <main className=" mt-10 md:mt-32 grid place-items-center px-4 ">
+    <main className=" mt-10 grid place-items-center px-4 ">
       <section className="relative w-full max-w-md rounded-2xl glass border shadow-lg p-8 transition-all hover:shadow-2xl">
         <div className="flex justify-center mb-6">
           <Github
@@ -148,9 +174,19 @@ export default function GithubConnectPage() {
               : "Connect GitHub"}
           </Button>
         </form>
+        {connectedUsername && (
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isDissConnecting}
+            onClick={disconnectGithub}
+            className="w-full font-medium py-3 mt-5 rounded-lg shadow-md"
+          >
+            Disconnect GitHub
+          </Button>
+        )}
       </section>
 
-      {/* Success popup */}
       {successOpen && (
         <div className="fixed top-4 left-1/2 z-50 translate-x-1/2 bg-main text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-pop">
           <CheckCircle2 className="h-5 w-5" />
@@ -160,7 +196,6 @@ export default function GithubConnectPage() {
         </div>
       )}
 
-      {/* Error popup */}
       {errorOpen && (
         <div className="fixed top-4 z-50 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-pop">
           <AlertTriangle className="h-5 w-5" />

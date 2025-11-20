@@ -54,9 +54,9 @@ export function ResumeEditor({
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const searchParams = useSearchParams();
-
+  
   const initialTemplateId = searchParams.get("template") || data.template;
-
+  
   const [selectedTemplate, setSelectedTemplate] =
     useState<string>(initialTemplateId);
 
@@ -174,42 +174,6 @@ export function ResumeEditor({
     );
   };
 
-  const goToPreviousSection = () => {
-    const currentIndex = sectionOrder.indexOf(activeSection);
-    if (currentIndex > 0) {
-      setActiveSection(sectionOrder[currentIndex - 1]);
-    }
-  };
-
-  const goToNextSection = () => {
-    const currentIndex = sectionOrder.indexOf(activeSection);
-    if (currentIndex < sectionOrder.length - 1) {
-      setActiveSection(sectionOrder[currentIndex + 1]);
-    }
-  };
-
-  const isSectionCompleted = (section: SectionType): boolean => {
-    switch (section) {
-      case "personal":
-        return !!resumeData.personalInfo && !!resumeData.personalInfo.fullName;
-      case "experience":
-        return (resumeData.experiences?.length || 0) > 0;
-      case "project":
-        return (resumeData.projects?.length || 0) > 0;
-      case "education":
-        return (resumeData.education?.length || 0) > 0;
-      case "skills":
-        return (resumeData.skills?.length || 0) > 0;
-      case "custom":
-        return (resumeData.customSections?.length || 0) > 0;
-      case "reorder":
-        return true;
-      case "template":
-        return !!resumeData.template;
-      default:
-        return false;
-    }
-  };
   const handleSectionAutoSave = (section: SectionType, values: any) => {
     setResumeData((prev) => {
       const updated = { ...prev };

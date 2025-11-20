@@ -20,7 +20,6 @@ export async function GET(
       );
     }
 
-    // fetch GitHub data
     const resume = await fetchGitHubResume(username);
 
     if (resume) {
@@ -132,5 +131,41 @@ export async function GET(
   } catch (err: any) {
     console.error("GitHub resume fetch error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { username: string } }
+) {
+  try {
+    const { username } = params;
+    const userId = await getUserIdFromSession();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        githubUsername: null,
+      },
+    });
+
+    await prisma.gitHubProfile.deleteMany({
+      where: {
+        userId,
+        username,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("GitHub disconnect error:", err);
+    return NextResponse.json(
+      { error: "Failed to disconnect GitHub" },
+      { status: 500 }
+    );
   }
 }

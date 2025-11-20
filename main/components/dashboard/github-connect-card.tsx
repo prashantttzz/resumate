@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useGetGithubUsername } from "@/query/user/query";
+import { Skeleton } from "../ui/skeleton";
 
 export function GithubConnectionCard() {
   const { data, isError, isLoading } = useGetGithubUsername();
@@ -38,13 +39,7 @@ export function GithubConnectionCard() {
     <Card
       className="
         relative overflow-hidden glass flex justify-center flex-col"
-    >      {isLoading && (
-        <CardHeader>
-          <CardTitle className="text-base md:text-lg font-semibold text-black dark:text-white">
-            Checking GitHub connection...
-          </CardTitle>
-        </CardHeader>
-      )}
+    >   
       {isError && (
         <CardHeader>
           <CardTitle className="text-base md:text-lg font-semibold text-red-400">

@@ -1,13 +1,10 @@
 "use client";
-
-import Loader from "@/components/Loader";
 import { ResumeEditor } from "@/components/resume/resume-editor";
 import { mergeResumeData } from "@/lib/resume-merger";
 import { useGetResumebyId, useUpdateTitle } from "@/query/resume/query";
 import { useGetGithubProfile } from "@/query/user/query";
-import { Edit3Icon, LoaderCircle, CheckIcon, XIcon } from "lucide-react";
+import {  LoaderCircle } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
 
 export default function ResumePage() {
   const params = useParams();

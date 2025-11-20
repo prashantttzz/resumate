@@ -1,8 +1,5 @@
 import { ResumeData } from "@/types/resume";
-export function mergeResumeData(
-  resumeData: any,
-  githubData: any
-): any | null {
+export function mergeResumeData(resumeData: any, githubData: any): any | null {
   if (!resumeData) {
     return null;
   }
@@ -12,15 +9,15 @@ export function mergeResumeData(
   const githubSkills = githubData?.skills ?? [];
 
   const defaultPersonalInfo = {
-    fullName: "John Doe",
-    email: "johndoe@gmail.com",
-    jobTitle: "Software Engineer",
-    phone: "8989898989",
-    linkedin: "https://linkedin.in",
+    fullName: "",
+    email: "",
+    jobTitle: "",
+    phone: "",
+    linkedin: "",
     github: "",
     website: "",
     address: "",
-    summary: "Your professional summary here.",
+    summary: "",
   };
 
   const defaultSectionOrder = [

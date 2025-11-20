@@ -39,15 +39,15 @@ export function initializeResumeState(
     const data = fetchedData as ResumeData; 
 
   const mergedPersonalInfo = {
-    fullName: data.personalInfo?.fullName || "John Doe",
-    email: data.personalInfo?.email || githubProfile?.personalInfo?.email || "youremail@gmail.com",
-    jobTitle: data.personalInfo?.jobTitle || "Software Engineer",
-    phone: data.personalInfo?.phone || "8989898989",
-    linkedin: data.personalInfo?.linkedin || "https://linkedin.in",
+    fullName: data.personalInfo?.fullName || "",
+    email: data.personalInfo?.email || githubProfile?.personalInfo?.email || "",
+    jobTitle: data.personalInfo?.jobTitle || "",
+    phone: data.personalInfo?.phone || "",
+    linkedin: data.personalInfo?.linkedin || "",
     github: data.personalInfo?.github || githubProfile?.personalInfo?.github || "",
-    website: data.personalInfo?.website || githubProfile?.personalInfo?.website || "hello",
+    website: data.personalInfo?.website || githubProfile?.personalInfo?.website || "",
     address: data.personalInfo?.address || githubProfile?.personalInfo?.address || "",
-    summary: data.personalInfo?.summary || "Your professional summary here.",
+    summary: data.personalInfo?.summary || "",
   };
 
   const mapExperience = (exp: any) => ({
@@ -60,10 +60,9 @@ export function initializeResumeState(
     id: id,
     slug: data.slug,
     title: data.title,
-    template: selectedTemplate || data.template || "default-template-id", // Ensure template has a fallback
+    template: selectedTemplate || data.template || "default-template-id", 
     personalInfo: mergedPersonalInfo,
     
-    // Process Arrays and apply date formatting
     experiences: data.experiences?.map(mapExperience) ?? [],
     projects: data.projects?.map(mapExperience) ?? (githubProfile?.projects?.map(mapExperience) ?? []),
     education: data.education?.map((edu: any) => ({
@@ -75,7 +74,6 @@ export function initializeResumeState(
     skills: data.skills || githubProfile?.skills || [],
     customSections: data.customSections ?? [],
     
-    // Section Order
     sectionOrder:
       (data.sectionOrder && data.sectionOrder.length > 0)
         ? data.sectionOrder
