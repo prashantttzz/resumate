@@ -29,7 +29,7 @@ export function GithubConnectionCard() {
         toast.error("Refresh failed ⚠️");
       }
     } catch {
-      toast.error("Refresh failed ⚠️");
+      toast.error("Refresh failed FOR SOME REASON ⚠️");
     } finally {
       setIsRefreshing(false);
     }
