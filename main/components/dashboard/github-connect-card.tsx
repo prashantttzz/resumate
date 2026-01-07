@@ -34,7 +34,6 @@ export function GithubConnectionCard() {
       setIsRefreshing(false);
     }
   }
-
   return (
     <Card
       className="
