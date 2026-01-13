@@ -26,7 +26,7 @@ export function GithubConnectionCard() {
       if (res.ok) {
         toast.success("GitHub connection refreshed 🎉");
       } else {
-        toast.error("Refresh failed ⚠️");
+        toast.error("Refresh failed");
       }
     } catch {
       toast.error("Refresh failed idk why  ⚠️");
