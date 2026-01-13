@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useGetGithubUsername } from "@/query/user/query";
-import { Skeleton } from "../ui/skeleton";
 
 export function GithubConnectionCard() {
   const { data, isError, isLoading } = useGetGithubUsername();

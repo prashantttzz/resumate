@@ -81,88 +81,56 @@ function mergeEnhancements(
   return updated;
 }
 
-let lastApiCallTime: number = 0;
-const MIN_TIME_BETWEEN_CALLS_MS = 200;
+let lastApiCallTime = 0;
+const MIN_TIME_BETWEEN_CALLS_MS = 1500; // adjust if needed
 
 async function callGeminiApi<T>(
   apiUrl: string,
   payload: any,
-  errorMessage: string,
-  maxRetries: number = 3,
-  retryDelayMs: number = 1000
+  errorMessage: string
 ): Promise<T> {
   const now = Date.now();
-  const timeSinceLastCall = now - lastApiCallTime;
+  const waitTime = Math.max(
+    0,
+    MIN_TIME_BETWEEN_CALLS_MS - (now - lastApiCallTime)
+  );
 
-  if (timeSinceLastCall < MIN_TIME_BETWEEN_CALLS_MS) {
-    const delayNeeded = MIN_TIME_BETWEEN_CALLS_MS - timeSinceLastCall;
-    await new Promise((resolve) => setTimeout(resolve, delayNeeded));
+  if (waitTime > 0) {
+    await new Promise((resolve) => setTimeout(resolve, waitTime));
   }
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
 
-      lastApiCallTime = Date.now();
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-      if (!response.ok) {
-        console.error(
-          `${errorMessage} API call failed (Attempt ${
-            i + 1
-          }/${maxRetries}) with status ${response.status}:`
-        );
-        if (
-          response.status === 429 ||
-          (response.status >= 500 && response.status < 600)
-        ) {
-          const delay = retryDelayMs * Math.pow(2, i);
-          await new Promise((resolve) => setTimeout(resolve, delay));
-          continue;
-        } else {
-          throw new Error(
-            `${errorMessage}: API call failed with status ${response.status}`
-          );
-        }
-      }
+  lastApiCallTime = Date.now();
 
-      const result = await response.json();
-      let jsonString = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!jsonString) {
-        console.error(
-          `${errorMessage}: No content found in Gemini response. Full result:`,
-          result
-        );
-        throw new Error(`${errorMessage}: AI did not return expected content.`);
-      }
-
-      // Handle cases where the model might wrap JSON in markdown code block
-      if (jsonString.startsWith("```json")) {
-        jsonString = jsonString
-          .substring(7, jsonString.lastIndexOf("```"))
-          .trim();
-      }
-      const parsedData = JSON.parse(jsonString) as T;
-      return parsedData;
-    } catch (error: any) {
-      if (i === maxRetries - 1) {
-        if (error instanceof Error) {
-          throw new Error(`${errorMessage}: ${error.message}`);
-        } else {
-          throw new Error(
-            `${errorMessage}: An unknown error occurred during API call or parsing after ${maxRetries} retries.`
-          );
-        }
-      }
-      console.error(`Attempt ${i + 1}/${maxRetries} failed:`, error.message);
-      const delay = retryDelayMs * Math.pow(2, i);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-    }
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`${errorMessage}: Status ${response.status} | ${body}`);
   }
-  throw new Error(`${errorMessage}: All retry attempts failed.`);
+
+  const result = await response.json();
+
+  let jsonString = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!jsonString) {
+    console.error("Full Gemini response:", result);
+    throw new Error(`${errorMessage}: Empty Gemini response text`);
+  }
+
+  if (jsonString.startsWith("```")) {
+    jsonString = jsonString.replace(/```json|```/g, "").trim();
+  }
+
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch (e) {
+    console.error("Raw Gemini text:", jsonString);
+    throw new Error(`${errorMessage}: Invalid JSON from Gemini`);
+  }
 }
 
 export async function POST(req: Request) {
@@ -339,7 +307,7 @@ Optimize for ATS performance, recruiter readability, and clarity.
             generationConfig: {
               responseMimeType: "application/json",
               temperature: 0.5, // Lowered for more deterministic JSON output
-              topP: 0.7,       // Lowered for more deterministic JSON output
+              topP: 0.7, // Lowered for more deterministic JSON output
               responseSchema: {
                 type: "OBJECT",
                 properties: {
@@ -438,7 +406,7 @@ Tailor your writing and keyword choices to align with this goal.
             generationConfig: {
               responseMimeType: "application/json",
               temperature: 0.5, // Lowered for more deterministic JSON output
-              topP: 0.7,       // Lowered for more deterministic JSON output
+              topP: 0.7, // Lowered for more deterministic JSON output
               responseSchema: {
                 type: "OBJECT",
                 properties: {
@@ -519,7 +487,7 @@ Ensure the tone, content, and keywords align with this profession.
             generationConfig: {
               responseMimeType: "application/json",
               temperature: 0.5, // Lowered for more deterministic JSON output
-              topP: 0.7,       // Lowered for more deterministic JSON output
+              topP: 0.7, // Lowered for more deterministic JSON output
               responseSchema: {
                 type: "OBJECT",
                 properties: {
@@ -565,12 +533,3 @@ Ensure the tone, content, and keywords align with this profession.
     );
   }
 }
-
-
-
-
-
-
-
-
-
