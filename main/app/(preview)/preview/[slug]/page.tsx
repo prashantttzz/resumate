@@ -12,6 +12,7 @@ export async function generateMetadata({
 }) {
   return { title: `Resume | ${params.slug}` };
 }
+export const revalidate = 3600; // cache page
 
 export default async function ResumeServerPage({
   params,
@@ -19,8 +20,10 @@ export default async function ResumeServerPage({
   params: { slug: string };
 }) {
   const slug = params.slug;
-  const resumeData = await getresumeBySlug(slug);
-  const showWaterMark = await isWatermark(slug);
+   const [resumeData, showWaterMark] = await Promise.all([
+    getresumeBySlug(slug),
+    isWatermark(slug),
+  ]);
   if (!resumeData) {
     notFound();
   }
