@@ -34,9 +34,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <SessionProvider>
           <Providers>
-            <SmoothScroll>
+            {/* <SmoothScroll> */}
           {children}
-            </SmoothScroll>
+            {/* </SmoothScroll> */}
           </Providers>
           </SessionProvider>
           <Toaster />
