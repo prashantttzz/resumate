@@ -1,4 +1,5 @@
 import { EntryType, TemplateProps } from "@/types/resume";
+import { Linkedin } from "lucide-react";
 import React from "react";
 
 const ProffesionalTemplate = ({
@@ -40,11 +41,12 @@ const ProffesionalTemplate = ({
               href={personal.linkedin}
               target="_blank"
               rel="noreferrer"
-              className="underline"
+              className="underline flex"
             >
               LinkedIn
             </a>
           )}
+          |
           {personal.github && (
             <a
               href={personal.github}
@@ -87,13 +89,19 @@ const ProffesionalTemplate = ({
                       <div key={idx} className="pl-2 page-section">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-base font-serif text-black ">{exp.position}</h3>
+                            <h3 className="text-base font-serif text-black ">
+                              {exp.position}
+                            </h3>
                             <p className="text-gray-900 font-serif italic text-xs">
-                              {exp.company} {exp.location && `• ${exp.location}`}
+                              {exp.company}{" "}
+                              {exp.location && `• ${exp.location}`}
                             </p>
                           </div>
                           <span className="text-xs text-gray-700 whitespace-nowrap font-serif">
-                            {formatDate(exp.startDate)} - {exp.current ? "Present" : formatDate(exp.endDate || "")}
+                            {formatDate(exp.startDate)} -{" "}
+                            {exp.current
+                              ? "Present"
+                              : formatDate(exp.endDate || "")}
                           </span>
                         </div>
                         {exp.description && (
@@ -128,13 +136,17 @@ const ProffesionalTemplate = ({
                       <div key={idx} className="pl-2">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-sm text-gray-900">{edu.degree}</h3>
+                            <h3 className="text-sm text-gray-900">
+                              {edu.degree}
+                            </h3>
                             <p className="text-gray-700 text-xs italic">
-                              {edu.institution} {edu.location && `• ${edu.location}`}
+                              {edu.institution}{" "}
+                              {edu.location && `• ${edu.location}`}
                             </p>
                           </div>
                           <span className="text-xs text-gray-700 whitespace-nowrap">
-                            {formatDate(edu.startDate)} - {edu.current ? "Present" : formatDate(edu.endDate!)}
+                            {formatDate(edu.startDate)} -{" "}
+                            {edu.current ? "Present" : formatDate(edu.endDate!)}
                           </span>
                         </div>
                       </div>
@@ -156,14 +168,33 @@ const ProffesionalTemplate = ({
                       <div key={idx} className="pl-2 page-section">
                         <div className="flex justify-between items-start">
                           <div>
-                            <h3 className="text-base font-serif text-black">{prj.role}</h3>
-                            <p className="text-gray-900 font-serif italic text-sm">{prj.title}</p>
+                            <h3 className="text-base font-serif text-black">
+                              {prj.title}
+                            </h3>
+                            <p className="text-gray-900 font-serif italic text-sm">
+                              {prj.role}
+                            </p>
                           </div>
                           <div className="flex flex-col items-end">
                             <span className="text-xs text-gray-700 whitespace-nowrap font-serif">
-                              {formatDate(prj.startDate)} - {prj.current ? "Present" : formatDate(prj.endDate || "")}
+                              {formatDate(prj.startDate)} -{" "}
+                              {prj.current
+                                ? "Present"
+                                : formatDate(prj.endDate || "")}
                             </span>
-                            {prj.link && <span className="text-gray-700 underline italic text-xs">{prj.link}</span>}
+                            {prj.link && (
+                              <a
+                                href={prj.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="underline flex"
+                              >
+                                {" "}
+                                <span className="text-gray-700 underline italic text-xs">
+                                  {prj.link}
+                                </span>
+                              </a>
+                            )}
                           </div>
                         </div>
                         {prj.description && (
@@ -190,14 +221,20 @@ const ProffesionalTemplate = ({
             return (
               skills.length > 0 && (
                 <section key={section.title} className="pt-3">
-                  <h2 className="text-lg text-gray-800 mb-2 border-b border-black">Skills</h2>
+                  <h2 className="text-lg text-gray-800 mb-2 border-b border-black">
+                    Skills
+                  </h2>
                   <div>
                     {skills.map((category, catIdx) => (
                       <div key={catIdx} className="page-section flex gap-1">
-                        <h3 className="text-sm font-semibold text-gray-800">{category.name}:</h3>
+                        <h3 className="text-sm font-semibold text-gray-800">
+                          {category.name}:
+                        </h3>
                         <div className="flex flex-wrap gap-1 items-center">
                           {category.skills.map((skill, skillIdx) => (
-                            <p key={skillIdx} className="text-gray-800 text-xs">{skill.name},</p>
+                            <p key={skillIdx} className="text-gray-800 text-xs">
+                              {skill.name},
+                            </p>
                           ))}
                         </div>
                       </div>
@@ -214,7 +251,10 @@ const ProffesionalTemplate = ({
                   {custom.map(
                     (customSection) =>
                       customSection.entries.length > 0 && (
-                        <section key={customSection.id} className="pt-3 page-section">
+                        <section
+                          key={customSection.id}
+                          className="pt-3 page-section"
+                        >
                           <h2 className="text-lg text-gray-800 mb-2 border-b border-black">
                             {customSection.title}
                           </h2>
@@ -222,8 +262,14 @@ const ProffesionalTemplate = ({
                             {customSection.entries.map((entry: EntryType) => (
                               <div key={entry.id} className="pl-2 page-section">
                                 <div className="flex justify-between items-start">
-                                  <h3 className="text-sm italic text-gray-900">{entry.title}</h3>
-                                  {entry.date && <span className="text-xs text-gray-500">{entry.date}</span>}
+                                  <h3 className="text-sm italic text-gray-900">
+                                    {entry.title}
+                                  </h3>
+                                  {entry.date && (
+                                    <span className="text-xs text-gray-500">
+                                      {entry.date}
+                                    </span>
+                                  )}
                                 </div>
                                 {entry.description && (
                                   <ul className="mt-0.5 text-gray-700 text-xs space-y-0.5">
@@ -232,7 +278,9 @@ const ProffesionalTemplate = ({
                                       .filter((line: any) => line.trim())
                                       .map((line: any, i: number) => (
                                         <li key={i} className="flex">
-                                          <span className="mr-1 text-gray-600">•</span>
+                                          <span className="mr-1 text-gray-600">
+                                            •
+                                          </span>
                                           {line}
                                         </li>
                                       ))}
@@ -252,7 +300,7 @@ const ProffesionalTemplate = ({
                             ))}
                           </div>
                         </section>
-                      )
+                      ),
                   )}
                 </div>
               )
