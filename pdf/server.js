@@ -25,9 +25,13 @@ app.post("/generate", async (req, res) => {
       select: { slug: true },
     });
 
-    const fullSlug = resume.slug;
+    if (!resume) {
+      return res.status(404).json({ error: "Resume not found" });
+    }
 
-    const pdfBuffer = await generatePDF(fullSlug);
+    const fullUrl = `${process.env.BASE_URL}preview/${resume.slug}`;
+
+    const pdfBuffer = await generatePDF(fullUrl);
 
     res.set({
       "Content-Type": "application/pdf",

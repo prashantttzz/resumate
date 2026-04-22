@@ -57,8 +57,8 @@ export const downloadCoverLetter = async ({
   onSuccess,
   onError,
 }: DownloadCoverLetterParams) => {
-  onStart?.(); 
   try {
+    onStart?.(); 
     const input = contentRef.current;
     if (!input) {
       console.error("Content element for PDF conversion not found. Make sure the ref is correctly attached and the element is in the DOM.");
@@ -128,8 +128,9 @@ export async function callResumeAI(
 
     const data = await res.json();
     return data.res;
-  } catch (err: any) {
-    console.error("callResumeAI error:", err.message);
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error("callResumeAI error:", errorMsg);
     throw err;
   }
 }
@@ -156,15 +157,16 @@ export async function generateCoverletter({
 
     const data = await res.json();
     return data.res;
-  } catch (err: any) {
-    console.error("callResumeAI error:", err.message);
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error("generateCoverletter error:", errorMsg);
     throw err;
   }
 }
 
-export  function debounce(fn: (...args: any[]) => void, delay = 800) {
-  let timer: any;
-  return (...args: any[]) => {
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay = 800) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), delay);
   };

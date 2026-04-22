@@ -15,7 +15,7 @@ export type SkillCategory = {
 export type Skill = {
   name: string;
 };
-export type resume = {
+export type Resume = {
   id: string;
   title: string;
   views: number;
