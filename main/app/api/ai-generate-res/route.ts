@@ -104,12 +104,12 @@ export async function POST(req: Request) {
     });
 
     const result = response.choices?.[0]?.message?.content?.trim() || "";
-    console.log("result", response);
     return NextResponse.json({ res: result }, { status: 200 });
-  } catch (error: any) {
-    console.error("AI Error:", error.message || error);
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error("AI Error:", errorMsg);
     return NextResponse.json(
-      { error: error.message || "Internal server error" },
+      { error: errorMsg || "Internal server error" },
       { status: 500 }
     );
   }

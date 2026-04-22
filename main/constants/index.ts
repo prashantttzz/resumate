@@ -65,18 +65,16 @@ export const templates = [
   },
   {
     id: "Boldline",
-    name: "boldline",
-    description:   "A bold and confident layout crafted for top-level achievers and leadership front and center.",
-
+    name: "Boldline",
+    description: "A bold and confident layout crafted for top-level achievers, putting leadership front and center.",
     categories: ["Technical", "Executive"],
     preview: "/templates/boldline.png",
   },
   {
     id: "professional",
-    name: "professional",
-    description:   "A Professional level resume that show your professionalism even if you dont have any.",
-
-    categories: ["Technical", "Proffesional"],
+    name: "Professional",
+    description: "A professional-level resume that shows your expertise and attention to detail.",
+    categories: ["Technical", "Professional"],
     preview: "/templates/boldline.png",
   },
 ];

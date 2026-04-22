@@ -5,12 +5,11 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
-session: {
-  strategy: "jwt",
-  maxAge: 7 * 24 * 60 * 60, // 7 days
-  updateAge: 24 * 60 * 60,  // re-issue token every 24h if user is active
-},
-
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+    updateAge: 24 * 60 * 60, // re-issue token every 24h if user is active
+  },
 
   providers: [
     GoogleProvider({
@@ -32,16 +31,16 @@ session: {
         });
         if (!user || !user.password) return null;
 
-        if (user && await bcrypt.compare(credentials.password, user.password)) {
+        if (user && (await bcrypt.compare(credentials.password, user.password))) {
           return { id: user.id, email: user.email, name: user.name };
         }
-        return null
+        return null;
       },
     }),
   ],
   pages: {
-    error:"/login"  // show errors on the same page
-  },  
+    error: "/login", // show errors on the same page
+  },
   secret: process.env.NEXT_AUTH_SECRET,
 
   callbacks: {

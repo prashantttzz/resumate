@@ -21,9 +21,6 @@ export default function LandingPage() {
   if (status === "loading") {
     return <Loader />;
   }
-  if (!status) {
-    return;
-  }
   return (
     <div className="relative min-h-screen bg-zinc-950 text-white flex flex-col  md:items-center">
       {/* Background gradient */}
